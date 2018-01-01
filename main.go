@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/microcosm-cc/bluemonday"
@@ -15,19 +16,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	p := bluemonday.NewPolicy()
+	p.AllowElements("a")
 
-	doc.Find("li").Each(func(i int, s *goquery.Selection) {
-
-		// elem := s.Find("thead > td").Text()
-
-		p := bluemonday.UGCPolicy()
-		p.AllowElements("form")
-		html := p.Sanitize(s.Text())
-
-		fmt.Println(html)
-
-		// elem := s.Find("button").Text()
-		// fmt.Println(i, ": ", elem)
+	doc.Find("div > div > div > div > div > ul > li > a.social-count").Each(func(i int, s *goquery.Selection) {
+		if i == 1 {
+			fmt.Println("star:", strings.TrimSpace(s.Text()))
+		}
 	})
 
 }
